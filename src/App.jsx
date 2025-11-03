@@ -12,6 +12,9 @@ export default function App() {
   const [gstRate, setGstRate] = useState(18);
   const [products, setProducts] = useState([{ name: "", price: "", quantity: "" }]);
   const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [logo, setLogo] = useState(null); // store logo as data URL
+  const [previewURL, setPreviewURL] = useState(""); // PDF preview
+
   const pdfRef = useRef();
 
   const currentDateTime = new Date();
@@ -100,7 +103,7 @@ export default function App() {
 
       await axios.post("http://localhost:5000/api/bills", payload);
 
-      generatePDF();
+      generatePDF(false); // Generate and download PDF
 
       // Reset form
       setFrom({ name: "", gstNo: "", address: "", email: "" });
@@ -109,6 +112,8 @@ export default function App() {
       setProducts([{ name: "", price: "", quantity: "" }]);
       setGstRate(18);
       setInvoiceNumber(generateInvoiceNumber());
+      setLogo(null);
+      setPreviewURL("");
 
       alert("Bill submitted successfully!");
     } catch (err) {
@@ -117,7 +122,7 @@ export default function App() {
     }
   };
 
-  const generatePDF = () => {
+  const generatePDF = (forPreview = false) => {
     const input = pdfRef.current;
 
     html2canvas(input, { scale: 3, useCORS: true, logging: false }).then((canvas) => {
@@ -142,7 +147,11 @@ export default function App() {
         heightLeft -= pdfHeight;
       }
 
-      pdf.save(`invoice_${invoiceNumber}.pdf`);
+      if (forPreview) {
+        setPreviewURL(pdf.output("bloburl"));
+      } else {
+        pdf.save(`invoice_${invoiceNumber}.pdf`);
+      }
     });
   };
 
@@ -150,6 +159,7 @@ export default function App() {
     <div className="container">
       <h1>Billing App</h1>
       <form onSubmit={handleSubmit} className="bill-form">
+        {/* Invoice Details */}
         <div className="section">
           <h2>Invoice Details</h2>
           <input
@@ -160,6 +170,31 @@ export default function App() {
           />
         </div>
 
+        {/* Logo Upload */}
+        <div className="section">
+          <h2>Logo (Optional)</h2>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => setLogo(ev.target.result);
+                reader.readAsDataURL(file);
+              }
+            }}
+          />
+          {logo && (
+            <img
+              src={logo}
+              alt="Logo Preview"
+              style={{ maxHeight: "80px", marginTop: "10px" }}
+            />
+          )}
+        </div>
+
+        {/* From */}
         <div className="section">
           <h2>From</h2>
           <input type="text" placeholder="Name" value={from.name} onChange={(e) => setFrom({ ...from, name: e.target.value })} required />
@@ -168,6 +203,7 @@ export default function App() {
           <input type="email" placeholder="Email" value={from.email} onChange={(e) => setFrom({ ...from, email: e.target.value })} />
         </div>
 
+        {/* To */}
         <div className="section">
           <h2>To</h2>
           <input type="text" placeholder="Name" value={to.name} onChange={(e) => setTo({ ...to, name: e.target.value })} required />
@@ -176,12 +212,14 @@ export default function App() {
           <input type="email" placeholder="Email" value={to.email} onChange={(e) => setTo({ ...to, email: e.target.value })} />
         </div>
 
+        {/* Transport */}
         <div className="section">
           <h2>Transport</h2>
           <input type="text" placeholder="ID" value={transport.id} onChange={(e) => setTransport({ ...transport, id: e.target.value })} />
           <input type="text" placeholder="Type" value={transport.type} onChange={(e) => setTransport({ ...transport, type: e.target.value })} />
         </div>
 
+        {/* Products */}
         <div className="section">
           <h2>Products</h2>
           {products.map((p, index) => (
@@ -195,11 +233,13 @@ export default function App() {
           <button type="button" onClick={addProductRow}>➕ Add Product</button>
         </div>
 
+        {/* GST */}
         <div className="section">
           <label>GST %:</label>
           <input type="number" value={gstRate} onChange={(e) => setGstRate(Number(e.target.value))} min="0" max="100" required style={{ width: "60px", marginLeft: "10px" }} />
         </div>
 
+        {/* Totals */}
         <div className="totals">
           <p>Date: {formattedDate}</p>
           <p>Time: {formattedTime}</p>
@@ -212,21 +252,51 @@ export default function App() {
         <button type="submit" className="submit-btn">Submit Bill & Generate PDF</button>
       </form>
 
-      {/* Hidden PDF template */}
-<div
+      {/* PDF Preview */}
+      <div className="section">
+        <h2>Invoice Preview</h2>
+        {previewURL ? (
+          <iframe
+            src={previewURL}
+            title="Invoice Preview"
+            width="100%"
+            height="600px"
+            style={{ border: "1px solid #ccc" }}
+          />
+        ) : (
+          <p>Click "Generate Preview" to see the invoice.</p>
+        )}
+        <button
+          type="button"
+          onClick={() => generatePDF(true)}
+          style={{ marginTop: "10px", padding: "8px 15px" }}
+        >
+          Generate Preview
+        </button>
+      </div>
+
+      {/* Hidden PDF Template */}
+      <div
         ref={pdfRef}
         id="pdf-container"
         style={{
           position: "absolute",
           left: "-9999px",
           width: "210mm",
-          padding:       "20px",
+          padding: "20px",
           fontFamily: "Arial, sans-serif",
           backgroundColor: "#fff",
           color: "#000",
         }}
       >
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          {logo && (
+            <img
+              src={logo}
+              alt="Logo"
+              style={{ maxHeight: "80px", marginBottom: "10px" }}
+            />
+          )}
           <h1>INVOICE</h1>
           <p>Tax Invoice / Bill of Supply</p>
           <p><strong>Invoice No:</strong> {invoiceNumber}</p>
@@ -268,20 +338,26 @@ export default function App() {
                 <td style={{ border: "1px solid #000", padding: "5px" }}>{p.name}</td>
                 <td style={{ border: "1px solid #000", padding: "5px" }}>{formatCurrency(Number(p.price))}</td>
                 <td style={{ border: "1px solid #000", padding: "5px" }}>{p.quantity}</td>
-                <td style={{ border: "1px solid #000", padding: "5px" }}>
-                  {formatCurrency((Number(p.price) || 0) * (Number(p.quantity) || 0))}
-                </td>
+                <td style={{ border: "1px solid #000", padding: "5px" }}>{formatCurrency((Number(p.price) || 0) * (Number(p.quantity) || 0))}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div style={{ marginTop: "20px", textAlign: "right", fontWeight: "bold" }}>
+        <div style={{ textAlign: "right", marginTop: "20px" }}>
           <p>Subtotal: {formatCurrency(subtotal)}</p>
-          <p>CGST ({gstRate / 2}%): {formatCurrency(cgst)}</p>
-          <p>SGST ({gstRate / 2}%): {formatCurrency(sgst)}</p>
+          <p>CGST: {formatCurrency(cgst)}</p>
+          <p>SGST: {formatCurrency(sgst)}</p>
           <h3>Total: {formatCurrency(totalAmount)}</h3>
         </div>
+
+        {transport.id && (
+          <div style={{ marginTop: "20px" }}>
+            <h3>Transport Details:</h3>
+            <p>ID: {transport.id}</p>
+            <p>Type: {transport.type}</p>
+          </div>
+        )}
       </div>
     </div>
   );
