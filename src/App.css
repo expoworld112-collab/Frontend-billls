@@ -1,120 +1,62 @@
-/* App.css */
-
+/* ===== Global Styles ===== */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
   margin: 0;
   padding: 0;
+  color: #333;
 }
 
 .container {
-  max-width: 1400px;
-  margin: 20px auto;
-  padding: 20px;
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
+  color: #2c3e50;
   margin-bottom: 30px;
-  color: #333;
 }
 
-.main-layout {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+/* ===== Form Sections ===== */
+.section {
+  margin-bottom: 25px;
 }
 
-/* Preview Section */
-.preview-section {
-  flex: 1 1 45%;
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.section h2 {
+  margin-bottom: 10px;
+  color: #34495e;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
-.preview-section h2 {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.preview-box {
-  overflow-x: auto;
-}
-
-.invoice-preview {
-  padding: 20px;
-  border: 2px solid #333;
-  border-radius: 5px;
-  background-color: #fff;
-  color: #333;
+.section input {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s ease;
   font-size: 14px;
 }
 
-.invoice-preview h1 {
-  margin: 0;
-  font-size: 28px;
-  letter-spacing: 1px;
+.section input:focus {
+  border-color: #2980b9;
+  outline: none;
+  box-shadow: 0 0 3px rgba(41, 128, 185, 0.3);
 }
 
-.invoice-preview h3 {
-  margin: 5px 0;
-}
-
-.invoice-preview table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-.invoice-preview th, .invoice-preview td {
-  border: 1px solid #333;
-  padding: 8px;
-  text-align: left;
-}
-
-.invoice-preview th {
-  background-color: #f0f0f0;
-}
-
-.invoice-preview tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-/* Form Section */
-.bill-form {
-  flex: 1 1 45%;
-  background-color: #fff;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.bill-form .section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bill-form input[type="text"],
-.bill-form input[type="email"],
-.bill-form input[type="number"],
-.bill-form input[type="file"] {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  width: 100%;
-  box-sizing: border-box;
-}
-
+/* ===== Product Row Styles ===== */
 .product-row {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .product-row input {
@@ -122,54 +64,170 @@ h1 {
 }
 
 .product-row button {
-  background-color: #ff4d4f;
-  border: none;
+  background-color: #e74c3c;
   color: #fff;
-  padding: 5px 10px;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  padding: 5px 10px;
+  transition: background-color 0.2s ease;
 }
 
 .product-row button:hover {
-  background-color: #d9363e;
+  background-color: #c0392b;
 }
 
-.bill-form button[type="button"] {
-  background-color: #1890ff;
-  color: white;
-  border: none;
+.section button[type="button"] {
+  background-color: #27ae60;
+  color: #fff;
   padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  align-self: flex-start;
-}
-
-.bill-form button[type="button"]:hover {
-  background-color: #096dd9;
-}
-
-.submit-btn {
-  background-color: #52c41a;
-  color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.section button[type="button"]:hover {
+  background-color: #1e8449;
+}
+
+/* ===== Totals Section ===== */
+.totals {
+  margin-top: 20px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+
+.totals p {
+  margin: 4px 0;
+}
+
+.totals h3 {
+  color: #2c3e50;
   margin-top: 10px;
 }
 
-.submit-btn:hover {
-  background-color: #389e0d;
+/* ===== Submit Button ===== */
+.submit-btn {
+  display: block;
+  width: 100%;
+  background-color: #2980b9;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .main-layout {
+.submit-btn:hover {
+  background-color: #1f618d;
+}
+
+/* ===== Invoice Preview ===== */
+iframe {
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.section p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* ===== Hidden PDF Template Styling ===== */
+#pdf-container {
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+  color: #000;
+}
+
+#pdf-container h1 {
+  color: #000;
+}
+
+#pdf-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+#pdf-container th,
+#pdf-container td {
+  border: 1px solid #000;
+  padding: 5px;
+}
+
+#pdf-container th {
+  background-color: #f2f2f2;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .product-row {
     flex-direction: column;
   }
 
-  .preview-section, .bill-form {
-    flex: 1 1 100%;
+  .product-row button {
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  iframe {
+    height: 400px;
   }
 }
+
+/* ===== Print Styles (Optional for A4 output) ===== */
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .container {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #pdf-container {
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .section, .submit-btn {
+    display: none;
+  }
+}
+/* ===== Submit & PDF Button ===== */
+.submit-btn {
+  background-color: #27ae60; /* Green */
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #1e8449; /* Darker green on hover */
+}
+
