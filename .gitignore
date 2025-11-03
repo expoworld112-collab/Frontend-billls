@@ -23,3 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 .env.local
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPYo6LZVxl2t9jxzhTs9Bhx3NHJfKq0hKlNmh/MwstjI expoworld112@gmail.com
