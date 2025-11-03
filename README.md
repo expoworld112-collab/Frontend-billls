@@ -22,3 +22,6 @@ this is a react project billing system with bills to be generated to the pdf wit
 repo the repositorty
 then run  npm i
 set up database connection string in backend
+#
+in backend add npm i
+run nodemon index.js
