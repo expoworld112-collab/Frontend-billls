@@ -13,8 +13,6 @@ export default function App() {
   const [products, setProducts] = useState([{ name: "", price: "", quantity: "" }]);
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [logo, setLogo] = useState(null); // store logo as data URL
-  const [previewURL, setPreviewURL] = useState(""); // PDF preview
-
   const pdfRef = useRef();
 
   const currentDateTime = new Date();
@@ -31,7 +29,6 @@ export default function App() {
       }
     };
     fetchBills();
-
     setInvoiceNumber(generateInvoiceNumber());
   }, []);
 
@@ -75,6 +72,14 @@ export default function App() {
       ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(amount)
       : "";
 
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setLogo(reader.result);
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -103,7 +108,7 @@ export default function App() {
 
       await axios.post("http://localhost:5000/api/bills", payload);
 
-      generatePDF(false); // Generate and download PDF
+      generatePDF();
 
       // Reset form
       setFrom({ name: "", gstNo: "", address: "", email: "" });
@@ -113,7 +118,6 @@ export default function App() {
       setGstRate(18);
       setInvoiceNumber(generateInvoiceNumber());
       setLogo(null);
-      setPreviewURL("");
 
       alert("Bill submitted successfully!");
     } catch (err) {
@@ -122,10 +126,9 @@ export default function App() {
     }
   };
 
-  const generatePDF = (forPreview = false) => {
+  const generatePDF = () => {
     const input = pdfRef.current;
-
-    html2canvas(input, { scale: 3, useCORS: true, logging: false }).then((canvas) => {
+    html2canvas(input, { scale: 3, useCORS: true }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -147,217 +150,138 @@ export default function App() {
         heightLeft -= pdfHeight;
       }
 
-      if (forPreview) {
-        setPreviewURL(pdf.output("bloburl"));
-      } else {
-        pdf.save(`invoice_${invoiceNumber}.pdf`);
-      }
+      pdf.save(`invoice_${invoiceNumber}.pdf`);
     });
   };
 
   return (
     <div className="container">
       <h1>Billing App</h1>
-      <form onSubmit={handleSubmit} className="bill-form">
-        {/* Invoice Details */}
-        <div className="section">
-          <h2>Invoice Details</h2>
-          <input
-            type="text"
-            value={invoiceNumber}
-            readOnly
-            style={{ backgroundColor: "#f0f0f0", cursor: "not-allowed" }}
-          />
-        </div>
+      <div className="main-layout">
+        {/* LEFT: Preview Section */}
+        <div className="preview-section">
+          <h2>Live Preview</h2>
+          <div className="preview-box">
+            <div ref={pdfRef} className="invoice-preview">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  {logo && <img src={logo} alt="Logo" style={{ maxHeight: "60px" }} />}
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <h1>INVOICE</h1>
+                  <p>Tax Invoice / Bill of Supply</p>
+                  <p><strong>Invoice No:</strong> {invoiceNumber}</p>
+                  <p><strong>Date:</strong> {formattedDate}</p>
+                  <p><strong>Time:</strong> {formattedTime}</p>
+                </div>
+              </div>
 
-        {/* Logo Upload */}
-        <div className="section">
-          <h2>Logo (Optional)</h2>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => setLogo(ev.target.result);
-                reader.readAsDataURL(file);
-              }
-            }}
-          />
-          {logo && (
-            <img
-              src={logo}
-              alt="Logo Preview"
-              style={{ maxHeight: "80px", marginTop: "10px" }}
-            />
-          )}
-        </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+                <div>
+                  <h3>From:</h3>
+                  <p>{from.name}</p>
+                  <p>GST No: {from.gstNo}</p>
+                  <p>{from.address}</p>
+                  <p>{from.email}</p>
+                </div>
+                <div>
+                  <h3>To:</h3>
+                  <p>{to.name}</p>
+                  <p>GST No: {to.gstNo}</p>
+                  <p>{to.address}</p>
+                  <p>{to.email}</p>
+                </div>
+              </div>
 
-        {/* From */}
-        <div className="section">
-          <h2>From</h2>
-          <input type="text" placeholder="Name" value={from.name} onChange={(e) => setFrom({ ...from, name: e.target.value })} required />
-          <input type="text" placeholder="GST No" value={from.gstNo} onChange={(e) => setFrom({ ...from, gstNo: e.target.value })} required />
-          <input type="text" placeholder="Address" value={from.address} onChange={(e) => setFrom({ ...from, address: e.target.value })} />
-          <input type="email" placeholder="Email" value={from.email} onChange={(e) => setFrom({ ...from, email: e.target.value })} />
-        </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid #000", padding: "8px" }}>#</th>
+                    <th style={{ border: "1px solid #000", padding: "8px" }}>Product</th>
+                    <th style={{ border: "1px solid #000", padding: "8px" }}>Price</th>
+                    <th style={{ border: "1px solid #000", padding: "8px" }}>Quantity</th>
+                    <th style={{ border: "1px solid #000", padding: "8px" }}>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((p, i) => (
+                    <tr key={i}>
+                      <td style={{ border: "1px solid #000", padding: "5px", textAlign: "center" }}>{i + 1}</td>
+                      <td style={{ border: "1px solid #000", padding: "5px" }}>{p.name}</td>
+                      <td style={{ border: "1px solid #000", padding: "5px", textAlign: "right" }}>{formatCurrency(Number(p.price))}</td>
+                      <td style={{ border: "1px solid #000", padding: "5px", textAlign: "center" }}>{p.quantity}</td>
+                      <td style={{ border: "1px solid #000", padding: "5px", textAlign: "right" }}>
+                        {formatCurrency((Number(p.price) || 0) * (Number(p.quantity) || 0))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-        {/* To */}
-        <div className="section">
-          <h2>To</h2>
-          <input type="text" placeholder="Name" value={to.name} onChange={(e) => setTo({ ...to, name: e.target.value })} required />
-          <input type="text" placeholder="GST No" value={to.gstNo} onChange={(e) => setTo({ ...to, gstNo: e.target.value })} required />
-          <input type="text" placeholder="Address" value={to.address} onChange={(e) => setTo({ ...to, address: e.target.value })} />
-          <input type="email" placeholder="Email" value={to.email} onChange={(e) => setTo({ ...to, email: e.target.value })} />
-        </div>
-
-        {/* Transport */}
-        <div className="section">
-          <h2>Transport</h2>
-          <input type="text" placeholder="ID" value={transport.id} onChange={(e) => setTransport({ ...transport, id: e.target.value })} />
-          <input type="text" placeholder="Type" value={transport.type} onChange={(e) => setTransport({ ...transport, type: e.target.value })} />
-        </div>
-
-        {/* Products */}
-        <div className="section">
-          <h2>Products</h2>
-          {products.map((p, index) => (
-            <div className="product-row" key={index}>
-              <input type="text" placeholder="Name" value={p.name} onChange={(e) => handleProductChange(index, "name", e.target.value)} required />
-              <input type="number" placeholder="Price" value={p.price} onChange={(e) => handleProductChange(index, "price", e.target.value)} min="0" required />
-              <input type="number" placeholder="Quantity" value={p.quantity} onChange={(e) => handleProductChange(index, "quantity", e.target.value)} min="0" required />
-              <button type="button" onClick={() => removeProductRow(index)}>❌</button>
+              <div style={{ marginTop: "20px", textAlign: "right", fontWeight: "bold" }}>
+                <p>Subtotal: {formatCurrency(subtotal)}</p>
+                <p>CGST ({gstRate / 2}%): {formatCurrency(cgst)}</p>
+                <p>SGST ({gstRate / 2}%): {formatCurrency(sgst)}</p>
+                <h3>Total: {formatCurrency(totalAmount)}</h3>
+              </div>
             </div>
-          ))}
-          <button type="button" onClick={addProductRow}>➕ Add Product</button>
-        </div>
-
-        {/* GST */}
-        <div className="section">
-          <label>GST %:</label>
-          <input type="number" value={gstRate} onChange={(e) => setGstRate(Number(e.target.value))} min="0" max="100" required style={{ width: "60px", marginLeft: "10px" }} />
-        </div>
-
-        {/* Totals */}
-        <div className="totals">
-          <p>Date: {formattedDate}</p>
-          <p>Time: {formattedTime}</p>
-          <p>Subtotal: {formatCurrency(subtotal)}</p>
-          <p>CGST: {formatCurrency(cgst)}</p>
-          <p>SGST: {formatCurrency(sgst)}</p>
-          <h3>Total: {formatCurrency(totalAmount)}</h3>
-        </div>
-
-        <button type="submit" className="submit-btn">Submit Bill & Generate PDF</button>
-      </form>
-
-      {/* PDF Preview */}
-      <div className="section">
-        <h2>Invoice Preview</h2>
-        {previewURL ? (
-          <iframe
-            src={previewURL}
-            title="Invoice Preview"
-            width="100%"
-            height="600px"
-            style={{ border: "1px solid #ccc" }}
-          />
-        ) : (
-          <p>Click "Generate Preview" to see the invoice.</p>
-        )}
-        <button
-          type="button"
-          onClick={() => generatePDF(true)}
-          style={{ marginTop: "10px", padding: "8px 15px" }}
-        >
-          Generate Preview
-        </button>
-      </div>
-
-      {/* Hidden PDF Template */}
-      <div
-        ref={pdfRef}
-        id="pdf-container"
-        style={{
-          position: "absolute",
-          left: "-9999px",
-          width: "210mm",
-          padding: "20px",
-          fontFamily: "Arial, sans-serif",
-          backgroundColor: "#fff",
-          color: "#000",
-        }}
-      >
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          {logo && (
-            <img
-              src={logo}
-              alt="Logo"
-              style={{ maxHeight: "80px", marginBottom: "10px" }}
-            />
-          )}
-          <h1>INVOICE</h1>
-          <p>Tax Invoice / Bill of Supply</p>
-          <p><strong>Invoice No:</strong> {invoiceNumber}</p>
-          <p><strong>Date:</strong> {formattedDate}</p>
-          <p><strong>Time:</strong> {formattedTime}</p>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-          <div>
-            <h3>From:</h3>
-            <p>{from.name}</p>
-            <p>GST No: {from.gstNo}</p>
-            <p>Address: {from.address}</p>
-            <p>Email: {from.email}</p>
-          </div>
-          <div>
-            <h3>To:</h3>
-            <p>{to.name}</p>
-            <p>GST No: {to.gstNo}</p>
-            <p>Address: {to.address}</p>
-            <p>Email: {to.email}</p>
           </div>
         </div>
 
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ border: "1px solid #000", padding: "5px" }}>#</th>
-              <th style={{ border: "1px solid #000", padding: "5px" }}>Product</th>
-              <th style={{ border: "1px solid #000", padding: "5px" }}>Price</th>
-              <th style={{ border: "1px solid #000", padding: "5px" }}>Quantity</th>
-              <th style={{ border: "1px solid #000", padding: "5px" }}>Total</th>
-            </tr>
-          </thead>
-          <tbody>
+        {/* RIGHT: Form Section */}
+        <form onSubmit={handleSubmit} className="bill-form">
+          <div className="section">
+            <h2>Invoice Details</h2>
+            <input type="text" value={invoiceNumber} readOnly style={{ backgroundColor: "#f0f0f0", cursor: "not-allowed" }} />
+          </div>
+
+          <div className="section">
+            <h2>Logo (Optional)</h2>
+            <input type="file" accept="image/*" onChange={handleLogoUpload} />
+          </div>
+
+          <div className="section">
+            <h2>From</h2>
+            <input type="text" placeholder="Name" value={from.name} onChange={(e) => setFrom({ ...from, name: e.target.value })} required />
+            <input type="text" placeholder="GST No" value={from.gstNo} onChange={(e) => setFrom({ ...from, gstNo: e.target.value })} required />
+            <input type="text" placeholder="Address" value={from.address} onChange={(e) => setFrom({ ...from, address: e.target.value })} />
+            <input type="email" placeholder="Email" value={from.email} onChange={(e) => setFrom({ ...from, email: e.target.value })} />
+          </div>
+
+          <div className="section">
+            <h2>To</h2>
+            <input type="text" placeholder="Name" value={to.name} onChange={(e) => setTo({ ...to, name: e.target.value })} required />
+            <input type="text" placeholder="GST No" value={to.gstNo} onChange={(e) => setTo({ ...to, gstNo: e.target.value })} required />
+            <input type="text" placeholder="Address" value={to.address} onChange={(e) => setTo({ ...to, address: e.target.value })} />
+            <input type="email" placeholder="Email" value={to.email} onChange={(e) => setTo({ ...to, email: e.target.value })} />
+          </div>
+
+          <div className="section">
+            <h2>Transport</h2>
+            <input type="text" placeholder="ID" value={transport.id} onChange={(e) => setTransport({ ...transport, id: e.target.value })} />
+            <input type="text" placeholder="Type" value={transport.type} onChange={(e) => setTransport({ ...transport, type: e.target.value })} />
+          </div>
+
+          <div className="section">
+            <h2>Products</h2>
             {products.map((p, index) => (
-              <tr key={index}>
-                <td style={{ border: "1px solid #000", padding: "5px" }}>{index + 1}</td>
-                <td style={{ border: "1px solid #000", padding: "5px" }}>{p.name}</td>
-                <td style={{ border: "1px solid #000", padding: "5px" }}>{formatCurrency(Number(p.price))}</td>
-                <td style={{ border: "1px solid #000", padding: "5px" }}>{p.quantity}</td>
-                <td style={{ border: "1px solid #000", padding: "5px" }}>{formatCurrency((Number(p.price) || 0) * (Number(p.quantity) || 0))}</td>
-              </tr>
+              <div className="product-row" key={index}>
+                <input type="text" placeholder="Name" value={p.name} onChange={(e) => handleProductChange(index, "name", e.target.value)} required />
+                <input type="number" placeholder="Price" value={p.price} onChange={(e) => handleProductChange(index, "price", e.target.value)} min="0" required />
+                <input type="number" placeholder="Quantity" value={p.quantity} onChange={(e) => handleProductChange(index, "quantity", e.target.value)} min="0" required />
+                <button type="button" onClick={() => removeProductRow(index)}>❌</button>
+              </div>
             ))}
-          </tbody>
-        </table>
-
-        <div style={{ textAlign: "right", marginTop: "20px" }}>
-          <p>Subtotal: {formatCurrency(subtotal)}</p>
-          <p>CGST: {formatCurrency(cgst)}</p>
-          <p>SGST: {formatCurrency(sgst)}</p>
-          <h3>Total: {formatCurrency(totalAmount)}</h3>
-        </div>
-
-        {transport.id && (
-          <div style={{ marginTop: "20px" }}>
-            <h3>Transport Details:</h3>
-            <p>ID: {transport.id}</p>
-            <p>Type: {transport.type}</p>
+            <button type="button" onClick={addProductRow}>➕ Add Product</button>
           </div>
-        )}
+
+          <div className="section">
+            <label>GST %:</label>
+            <input type="number" value={gstRate} onChange={(e) => setGstRate(Number(e.target.value))} min="0" />
+          </div>
+
+          <button type="submit" className="submit-btn">Generate PDF & Save</button>
+        </form>
       </div>
     </div>
   );
