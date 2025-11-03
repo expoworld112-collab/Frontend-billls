@@ -1,0 +1,124 @@
+/* App.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: #fff;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.bill-form .section {
+  margin-bottom: 25px;
+}
+
+.bill-form h2 {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.bill-form input[type="text"],
+.bill-form input[type="number"] {
+  width: calc(50% - 10px);
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.product-row input {
+  width: 25%;
+}
+
+.product-row button {
+  padding: 5px 10px;
+  background-color: #ff4d4f;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-row button:hover {
+  background-color: #e04344;
+}
+
+.bill-form button[type="button"] {
+  padding: 8px 12px;
+  background-color: #1890ff;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.bill-form button[type="button"]:hover {
+  background-color: #0f7ae5;
+}
+
+.totals {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.totals p {
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #52c41a;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #449d13;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bill-form input[type="text"],
+  .bill-form input[type="number"] {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .product-row input {
+    width: 100%;
+  }
+
+  .product-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
