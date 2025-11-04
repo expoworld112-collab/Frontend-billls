@@ -105,7 +105,18 @@ const BillForm = () => {
         </button>
 
         <br />
-        <button type="submit">Save Bill</button>
+        {/* <button type="submit">Save Bill</button> */}
+     <button
+  type="button"
+  className="submit-btn"
+  onClick={async () => {
+    await submitBill();
+    generatePDF(false);
+  }}
+>
+  Submit Bill & Generate PDF
+</button>
+
       </form>
       <p>{message}</p>
     </div>

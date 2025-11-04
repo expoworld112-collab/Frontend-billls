@@ -1,62 +1,101 @@
-/* ===== Global Styles ===== */
+/* ────────────────────────────────
+   GLOBAL LAYOUT
+──────────────────────────────── */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
   margin: 0;
-  padding: 0;
-  color: #333;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  background-color: #f9fafb;
+  color: #222;
 }
 
 .container {
-  max-width: 900px;
-  margin: 40px auto;
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
-h1 {
+/* ────────────────────────────────
+   LEFT SIDE — PREVIEW SECTION
+──────────────────────────────── */
+.preview-section {
+  flex: 1;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-section h2 {
+  margin-bottom: 15px;
   text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
+  color: #007bff;
 }
 
-/* ===== Form Sections ===== */
+.preview-section iframe {
+  flex: 1;
+  border: none;
+  background-color: #fafafa;
+}
+
+/* ────────────────────────────────
+   RIGHT SIDE — FORM SECTION
+──────────────────────────────── */
+.form-section {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 40px;
+  background: #f9f9f9;
+}
+
+.form-section h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
 .section {
-  margin-bottom: 25px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .section h2 {
+  font-size: 1.1rem;
   margin-bottom: 10px;
-  color: #34495e;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 5px;
+  color: #444;
 }
 
+/* ────────────────────────────────
+   INPUT FIELDS
+──────────────────────────────── */
 .section input {
-  display: block;
   width: 100%;
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
   border: 1px solid #ccc;
-  transition: border-color 0.2s ease;
-  font-size: 14px;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
 
 .section input:focus {
-  border-color: #2980b9;
+  border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 3px rgba(41, 128, 185, 0.3);
+  box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
 }
 
-/* ===== Product Row Styles ===== */
+/* ────────────────────────────────
+   PRODUCT ROWS
+──────────────────────────────── */
 .product-row {
   display: flex;
+  gap: 6px;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .product-row input {
@@ -64,170 +103,205 @@ h1 {
 }
 
 .product-row button {
-  background-color: #e74c3c;
-  color: #fff;
+  background: #ff4d4f;
   border: none;
-  border-radius: 5px;
+  color: #fff;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  padding: 5px 10px;
-  transition: background-color 0.2s ease;
+  font-size: 1rem;
+  padding: 6px 10px;
+  transition: 0.2s ease;
 }
 
 .product-row button:hover {
-  background-color: #c0392b;
+  background: #d9363e;
 }
 
+/* ────────────────────────────────
+   ADD PRODUCT BUTTON
+──────────────────────────────── */
 .section button[type="button"] {
-  background-color: #27ae60;
-  color: #fff;
-  padding: 8px 12px;
+  background: #007bff;
   border: none;
-  border-radius: 6px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 12px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-weight: 500;
+  transition: 0.2s;
 }
 
 .section button[type="button"]:hover {
-  background-color: #1e8449;
+  background: #0056b3;
 }
 
-/* ===== Totals Section ===== */
-.totals {
-  margin-top: 20px;
-  font-size: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 15px;
-  border: 1px solid #ddd;
-}
-
+/* ────────────────────────────────
+   TOTALS SECTION
+──────────────────────────────── */
 .totals p {
   margin: 4px 0;
+  font-size: 0.9rem;
 }
 
 .totals h3 {
-  color: #2c3e50;
+  color: #007bff;
   margin-top: 10px;
 }
 
-/* ===== Submit Button ===== */
+/* ────────────────────────────────
+   SUBMIT BUTTON
+──────────────────────────────── */
 .submit-btn {
-  display: block;
-  width: 100%;
-  background-color: #2980b9;
+  background: #28a745;
   color: #fff;
-  padding: 12px;
   border: none;
   border-radius: 6px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
+  width: 100%;
+  transition: background 0.3s;
 }
 
 .submit-btn:hover {
-  background-color: #1f618d;
+  background: #218838;
 }
 
-/* ===== Invoice Preview ===== */
-iframe {
-  border-radius: 6px;
-  background-color: #fff;
-}
-
-.section p {
-  font-size: 14px;
-  color: #555;
-}
-
-/* ===== Hidden PDF Template Styling ===== */
+/* ────────────────────────────────
+   PDF CONTAINER (HIDDEN)
+──────────────────────────────── */
 #pdf-container {
-  background-color: #fff;
-  font-family: Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
   color: #000;
+  line-height: 1.4;
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
 }
 
 #pdf-container h1 {
-  color: #000;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+  color: #111;
 }
 
+#pdf-container p {
+  margin: 3px 0;
+  font-size: 0.9rem;
+}
+
+#pdf-container h3 {
+  margin-bottom: 5px;
+  color: #222;
+}
+
+/* ────────────────────────────────
+   TABLE STYLING
+──────────────────────────────── */
 #pdf-container table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  margin-top: 20px;
+  font-size: 0.9rem;
 }
 
 #pdf-container th,
 #pdf-container td {
-  border: 1px solid #000;
-  padding: 5px;
+  border: 1px solid #555;
+  padding: 8px 10px;
+  text-align: left;
 }
 
 #pdf-container th {
-  background-color: #f2f2f2;
+  background-color: #e9ecef;
+  font-weight: 600;
 }
 
-/* ===== Responsive Design ===== */
-@media (max-width: 768px) {
-  .container {
-    width: 95%;
-    padding: 20px;
-  }
-
-  .product-row {
-    flex-direction: column;
-  }
-
-  .product-row button {
-    width: 100%;
-    margin-top: 5px;
-  }
-
-  iframe {
-    height: 400px;
-  }
+#pdf-container tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
 }
 
-/* ===== Print Styles (Optional for A4 output) ===== */
+/* ────────────────────────────────
+   TOTALS INSIDE PDF
+──────────────────────────────── */
+#pdf-container div[style*="text-align: right"] p,
+#pdf-container div[style*="text-align: right"] h3 {
+  margin: 3px 0;
+  font-size: 0.95rem;
+}
+
+#pdf-container h3 {
+  color: #007bff;
+  font-weight: 600;
+}
+
+/* ────────────────────────────────
+   FOOTER INSIDE PDF
+──────────────────────────────── */
+.invoice-footer {
+  margin-top: 40px;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+  text-align: center;
+}
+
+.invoice-footer p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.invoice-footer div {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.invoice-footer strong {
+  font-size: 0.85rem;
+}
+
+/* ────────────────────────────────
+   PRINT MEDIA RULES
+──────────────────────────────── */
 @media print {
   body {
     background: #fff;
   }
 
-  .container {
-    box-shadow: none;
-    border: none;
-    margin: 0;
-    padding: 0;
+  .container,
+  .form-section,
+  .preview-section {
+    display: none;
   }
 
   #pdf-container {
-    position: static !important;
-    width: 100% !important;
-    padding: 0 !important;
+    position: static;
+    left: 0;
+    padding: 20mm;
+    box-shadow: none;
+    background-color: #fff;
   }
 
-  .section, .submit-btn {
-    display: none;
+  #pdf-container table,
+  #pdf-container th,
+  #pdf-container td {
+    border: 1px solid #000;
+  }
+
+  #pdf-container th {
+    background-color: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  #pdf-container h1,
+  #pdf-container h3 {
+    color: #000;
+  }
+
+  .invoice-footer {
+    position: absolute;
+    bottom: 20mm;
+    width: 100%;
   }
 }
-/* ===== Submit & PDF Button ===== */
-.submit-btn {
-  background-color: #27ae60; /* Green */
-  color: #fff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-  background-color: #1e8449; /* Darker green on hover */
-}
-
