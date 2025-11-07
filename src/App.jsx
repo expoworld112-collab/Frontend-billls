@@ -105,6 +105,42 @@ export default function App() {
     return () => clearTimeout(debounceTimer.current);
   }, [from, to, transport, gstRate, products, logo]);
 
+  // ✅ Save to backend + generate PDF
+  const handleSubmit = async () => {
+    const invoiceData = {
+      from,
+      to,
+      transport,
+      gstRate,
+      products,
+      invoiceNumber,
+      subtotal,
+      cgst,
+      sgst,
+      totalAmount,
+      date: formattedDate,
+      time: formattedTime,
+      logo,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/bills", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(invoiceData),
+      });
+
+      if (!res.ok) throw new Error("Failed to save invoice");
+
+      console.log("✅ Invoice saved successfully!");
+      alert("Invoice saved successfully!");
+      generatePDF(false);
+    } catch (err) {
+      console.error("❌ Error saving invoice:", err);
+      alert("Could not save invoice. Check console for details.");
+    }
+  };
+
   return (
     <div className="container">
       {/* Left: Live Preview */}
@@ -209,11 +245,7 @@ export default function App() {
 
         {/* Submit & Generate PDF */}
         <div className="section">
-          <button
-            type="button"
-            className="submit-btn"
-            onClick={() => generatePDF(false)}
-          >
+          <button type="button" className="submit-btn" onClick={handleSubmit}>
             Submit Bill & Generate PDF
           </button>
         </div>
