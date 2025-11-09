@@ -1,13 +1,28 @@
 /* ────────────────────────────────
-   GLOBAL LAYOUT
+   GLOBAL LAYOUT & TYPOGRAPHY
 ──────────────────────────────── */
-body {
+body, html {
   margin: 0;
   font-family: "Inter", "Segoe UI", Roboto, sans-serif;
   background-color: #f9fafb;
   color: #222;
+  height: 100%;
+  box-sizing: border-box;
 }
 
+/* Utility */
+h1, h2, h3, p {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ────────────────────────────────
+   CONTAINER LAYOUT
+──────────────────────────────── */
 .container {
   display: flex;
   height: 100vh;
@@ -73,19 +88,23 @@ body {
 /* ────────────────────────────────
    INPUT FIELDS
 ──────────────────────────────── */
-.section input {
+.section input,
+.login-card input[type="text"],
+.login-card input[type="password"] {
   width: 100%;
-  padding: 8px 10px;
-  margin-bottom: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
 }
 
-.section input:focus {
+.section input:focus,
+.login-card input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
 }
 
 /* ────────────────────────────────
@@ -180,9 +199,8 @@ body {
   box-sizing: border-box;
 }
 
-#pdf-container h1 {
+#pdf-container h1, #pdf-container h3 {
   margin-bottom: 5px;
-  letter-spacing: 1px;
   color: #111;
 }
 
@@ -191,14 +209,7 @@ body {
   font-size: 0.9rem;
 }
 
-#pdf-container h3 {
-  margin-bottom: 5px;
-  color: #222;
-}
-
-/* ────────────────────────────────
-   TABLE STYLING
-──────────────────────────────── */
+/* TABLE STYLING */
 #pdf-container table {
   width: 100%;
   border-collapse: collapse;
@@ -206,8 +217,7 @@ body {
   font-size: 0.9rem;
 }
 
-#pdf-container th,
-#pdf-container td {
+#pdf-container th, #pdf-container td {
   border: 1px solid #555;
   padding: 8px 10px;
   text-align: left;
@@ -222,23 +232,7 @@ body {
   background-color: #f8f9fa;
 }
 
-/* ────────────────────────────────
-   TOTALS INSIDE PDF
-──────────────────────────────── */
-#pdf-container div[style*="text-align: right"] p,
-#pdf-container div[style*="text-align: right"] h3 {
-  margin: 3px 0;
-  font-size: 0.95rem;
-}
-
-#pdf-container h3 {
-  color: #007bff;
-  font-weight: 600;
-}
-
-/* ────────────────────────────────
-   FOOTER INSIDE PDF
-──────────────────────────────── */
+/* FOOTER INSIDE PDF */
 .invoice-footer {
   margin-top: 40px;
   border-top: 1px solid #ccc;
@@ -257,21 +251,123 @@ body {
   margin-top: 30px;
 }
 
-.invoice-footer strong {
+/* ────────────────────────────────
+   LOGIN PAGE STYLING
+──────────────────────────────── */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 30px;
+  box-sizing: border-box;
+  text-align: center;
+  animation: floatIn 0.8s ease-in-out;
+  margin: auto;
+}
+
+.login-card h1 {
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+  color: #007bff;
+}
+
+.login-card p {
+  margin-bottom: 25px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.login-card input {
+  background-color: #fafafa;
+}
+
+.login-card input:focus {
+  background-color: #fff;
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.login-card button:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.login-card .forgot-password {
+  display: block;
+  margin-top: 15px;
+  color: #007bff;
   font-size: 0.85rem;
+}
+
+.login-card .forgot-password:hover {
+  color: #0056b3;
+}
+
+.login-error {
+  color: #e63946;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* ────────────────────────────────
+   ANIMATIONS
+──────────────────────────────── */
+@keyframes fadeIn {
+  0% {opacity: 0; transform: translateY(-20px);}
+  100% {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes floatIn {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ────────────────────────────────
+   RESPONSIVE DESIGN
+──────────────────────────────── */
+@media (max-width: 500px) {
+  .form-section, .preview-section {
+    padding: 20px;
+  }
+
+  .login-card {
+    padding: 30px 20px;
+  }
 }
 
 /* ────────────────────────────────
    PRINT MEDIA RULES
 ──────────────────────────────── */
 @media print {
-  body {
-    background: #fff;
-  }
+  body { background: #fff; }
 
-  .container,
-  .form-section,
-  .preview-section {
+  .container, .form-section, .preview-section, .login-card {
     display: none;
   }
 
@@ -283,9 +379,7 @@ body {
     background-color: #fff;
   }
 
-  #pdf-container table,
-  #pdf-container th,
-  #pdf-container td {
+  #pdf-container table, #pdf-container th, #pdf-container td {
     border: 1px solid #000;
   }
 
@@ -294,8 +388,7 @@ body {
     -webkit-print-color-adjust: exact;
   }
 
-  #pdf-container h1,
-  #pdf-container h3 {
+  #pdf-container h1, #pdf-container h3 {
     color: #000;
   }
 
